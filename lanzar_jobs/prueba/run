@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Check if the path is ~/gem5
+if [ ! -d ~/gem5 ]; then
+    echo "gem5 must be cloned into the home directory"
+    exit 1
+fi
+
+# Check the parameters: IQ size
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <IQ size>"
+    exit 1
+fi
+
+build/X86/gem5.opt -re --outdir=tfg/board/out/iq$1 tfg/board/configs/configO3board.py --iq_size $1
