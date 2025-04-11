@@ -5,7 +5,7 @@ import sys
 import shutil
 import argparse
 
-sys.path.append("/nfs/home/ce/alonsoge/gem5/tfg/board/configs")
+sys.path.append("/nfs/home/ce/alonsoge/gem5/tfg/configs")
 from SPLASH import getSplashPath, getSplashName
 import time
 
@@ -32,7 +32,7 @@ def generate_sbatch_script(gem5_path, output_dir, config, iq_size, app_name, app
 #SBATCH --job-name={app_name}_{iq_size}
 #SBATCH --output={output_dir}/slurm-%j.out
 
-srun {gem5_path}build/X86/gem5.opt --outdir={output_dir} {gem5_path}tfg/board/configs/restore-checkpoint.py \
+srun {gem5_path}build/X86/gem5.opt --outdir={output_dir} {gem5_path}tfg/configs/restore-checkpoint.py \
 --config {config} \
 --ckpt_path {ckpt_path} \
 --application {app_path} \
@@ -61,11 +61,11 @@ def get_applications_by_benchmark(benchmark):
             "SPLASH4-WATER-SPATIAL", "SPLASH4-WATER-NSQUARED"
         ],
         "NAS": [
-            "bt.A.x", "bt.W.x", "cg.A.x", "cg.W.x",            
-            "ep.A.x", "ep.W.x", 
-            "ft.A.x", "ft.W.x", "is.A.x", "is.W.x", 
-            "lu.A.x", "lu.W.x", "mg.A.x", "mg.W.x", 
-            "sp.A.x", "sp.W.x", "ua.A.x", "ua.W.x",
+            "bt.A.x", #"bt.W.x", "cg.A.x", "cg.W.x",            
+            # "ep.A.x", "ep.W.x", 
+            # "ft.A.x", "ft.W.x", "is.A.x", "is.W.x", 
+            # "lu.A.x", "lu.W.x", "mg.A.x", "mg.W.x", 
+            # "sp.A.x", "sp.W.x", "ua.A.x", "ua.W.x",
         ],
         "SPEC": [
             "cactuBSSN", "gcc", "lbm", "mcf", "namd", "povray", "x264", "xalan"
@@ -98,7 +98,7 @@ def main(benchmark):
     print("Executing main")
 
     gem5_path = "/nfs/home/ce/alonsoge/gem5/"
-    base_output_dir = "/nfs/home/ce/alonsoge/gem5/tfg/board/out/batch/"
+    base_output_dir = "/nfs/home/ce/alonsoge/gem5/tfg/out/batch/"
     ckpt_base_dir = "/nfs/shared/ce/gem5/ckpts/x86/1core/1GB/"
     benchmark_base_dir = "/nfs/shared/ce/gem5/bin/"
     

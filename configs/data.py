@@ -11,10 +11,10 @@ DEFAULT_NUM_TICKS = 1000000000000
 BIG_O3_PROCESSOR_CONFIG = {
     "frontend_width": 10,
     "backend_width": 12,
-    "rob_size": 1100,             # Maximo, o sale:  Assertion `cpu->instcount <= 1500' failed. Original era 630.
+    "rob_size": 900,             # Maximo, o sale:  Assertion `cpu->instcount <= 1500' failed. Original era 630.
     "lsq_size": 512,           
-    "num_int_phys_regs": 1116,    # Eran 630, pero pongo > rob_size para que no limite (mayoria de ejemplos pone de 16 a 64 mas)
-    "num_fp_phys_regs": 1132,
+    "num_int_phys_regs": 916,    # Eran 630, pero pongo > rob_size para que no limite (mayoria de ejemplos pone de 16 a 64 mas)
+    "num_fp_phys_regs": 932,
     "fu_pool": "Big",
     "bp": "PerceptBP",
     "numEntriesBtb": 2048 * 4,
@@ -43,10 +43,10 @@ SMALL_O3_PROCESSOR_CONFIG = {
 GENERAL_O3_PROCESSOR_CONFIG = {
     "frontend_width": 10,
     "backend_width": 12,
-    "rob_size": 1100,
+    "rob_size": 900,
     "lsq_size": 512,
-    "num_int_phys_regs": 1116,
-    "num_fp_phys_regs": 1132,
+    "num_int_phys_regs": 916,
+    "num_fp_phys_regs": 932,
     "fu_pool": "General",
     "num_ports": 4,               # Sera un parametro luego
     "bp": "PerceptBP",
