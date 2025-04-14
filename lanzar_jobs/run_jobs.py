@@ -61,11 +61,11 @@ def get_applications_by_benchmark(benchmark):
             "SPLASH4-WATER-SPATIAL", "SPLASH4-WATER-NSQUARED"
         ],
         "NAS": [
-            "bt.A.x", #"bt.W.x", "cg.A.x", "cg.W.x",            
-            # "ep.A.x", "ep.W.x", 
-            # "ft.A.x", "ft.W.x", "is.A.x", "is.W.x", 
-            # "lu.A.x", "lu.W.x", "mg.A.x", "mg.W.x", 
-            # "sp.A.x", "sp.W.x", "ua.A.x", "ua.W.x",
+            "bt.A.x", "bt.W.x", "cg.A.x", "cg.W.x",            
+            "ep.A.x", "ep.W.x", 
+            "ft.A.x", "ft.W.x", "is.A.x", "is.W.x", 
+            "lu.A.x", "lu.W.x", "mg.A.x", "mg.W.x", 
+            "sp.A.x", "sp.W.x", "ua.A.x", "ua.W.x",
         ],
         "SPEC": [
             "cactuBSSN", "gcc", "lbm", "mcf", "namd", "povray", "x264", "xalan"
@@ -78,7 +78,6 @@ def process_benchmark(benchmark, gem5_path, base_output_dir, ckpt_base_dir, benc
     applications = get_applications_by_benchmark(benchmark)
     benchmark_dir = os.path.join(benchmark_base_dir, "Splash-4" if benchmark == "SPLASH" else "NPB3.3-SER")
     ckpt_path = os.path.join(ckpt_base_dir, "SPLASH4" if benchmark == "SPLASH" else "NPB3.3-SER")
-
 
     for config in configs:
         for app in applications:

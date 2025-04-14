@@ -3,6 +3,10 @@ import argparse
 import os
 import pandas as pd # type: ignore
 import re
+import sys
+
+sys.path.append("/nfs/home/ce/alonsoge/gem5/tfg/configs")
+from SPLASH import getSplashPath, getSplashName
 
 def extract_ipc(stats_file):
     try:
@@ -40,7 +44,7 @@ def get_applications_by_benchmark(benchmark):
 def main(benchmark):
     print("Leyendo resultados")
 
-    base_output_dir = f"/nfs/home/ce/alonsoge/gem5/tfg/board/out/batch/"
+    base_output_dir = f"/nfs/home/ce/alonsoge/gem5/tfg/out/batch/"
     if not os.path.exists(base_output_dir):
         print(f"Error: The directory {base_output_dir} does not exist.")
         return
@@ -55,7 +59,7 @@ def main(benchmark):
             all_data = []  # Lista para almacenar los datos de todas las aplicaciones
             for app in applications:
                 if benchmark == "SPLASH":
-                    app_name = re.search(r'SPLASH4-(.+)$', app).group(1)
+                    app_name = getSplashName(app)
                 else:
                     app_name = app
                 ipc_values = []
@@ -74,7 +78,7 @@ def main(benchmark):
                     continue
 
                 # Agregar los valores de IPC de la aplicación a la lista de datos
-                all_data.append([app] + ipc_values)
+                all_data.append([app_name] + ipc_values)
 
             # Crear un DataFrame con todas las aplicaciones y sus valores de IPC
             df = pd.DataFrame(all_data, columns=["App"] + iq_sizes)

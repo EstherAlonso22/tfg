@@ -40,7 +40,7 @@ def get_applications_by_benchmark(benchmark):
 def main(benchmark):
     print("Leyendo resultados")
 
-    base_output_dir = f"/nfs/home/ce/alonsoge/gem5/tfg/board/out/batch/"
+    base_output_dir = f"/nfs/home/ce/alonsoge/gem5/tfg/out/batch/"
     if not os.path.exists(base_output_dir):
         print(f"Error: The directory {base_output_dir} does not exist.")
         return
@@ -74,7 +74,7 @@ def main(benchmark):
                     continue
 
                 # Agregar los valores de IQ Stalls de la aplicación a la lista de datos
-                all_data.append([app] + numIQStalls_values)
+                all_data.append([app_name] + numIQStalls_values)
 
             # Crear un DataFrame con todas las aplicaciones y sus valores de IQ Stalls
             df = pd.DataFrame(all_data, columns=["App"] + iq_sizes)
