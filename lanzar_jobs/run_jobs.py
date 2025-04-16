@@ -102,10 +102,11 @@ def main(benchmark):
     benchmark_base_dir = "/nfs/shared/ce/gem5/bin/"
     
     configs = [
-               "bigO3", 
+               #"bigO3", 
                "smallO3"
                ]
-    iq_sizes = [4, 8, 16, 32, 64, 128, 256, 512, 1024]
+    #iq_sizes = [4, 8, 16, 32, 64, 128, 256, 512, 1024]
+    iq_sizes = [24, 48, 80, 96]
     benchmarks = [benchmark] if benchmark != "ALL" else ["SPLASH", "NAS"]
 
     for bm in benchmarks:

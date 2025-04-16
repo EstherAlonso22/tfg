@@ -46,7 +46,7 @@ def main(benchmark):
         return
 
     configs = ["bigO3", "smallO3"]
-    iq_sizes = [4, 8, 16, 32, 64, 128, 256, 512, 1024]
+    iq_sizes = [4, 8, 16, 24, 32, 48, 64, 80, 96, 128, 256, 512]
     benchmarks = [benchmark] if benchmark != "ALL" else ["SPLASH", "NAS"]
 
     for benchmark in benchmarks:
