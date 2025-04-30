@@ -36,6 +36,8 @@ class O3Core(X86O3CPU):
         num_local_histories=None,
         local_history_length=None,
         num_ports=None,  # Optional parameter for "General" fu_pool
+        num_IQs=None,
+        num_DividedIQ_entries=None,
     ):
         super().__init__()
         self.fetchWidth = frontend_width
@@ -90,6 +92,10 @@ class O3Core(X86O3CPU):
         else:
             self.branchPred = TournamentBP()
 
+        if num_IQs and num_DividedIQ_entries:
+            self.numIQs = num_IQs
+            self.numEntriesDividedIQ = num_DividedIQ_entries
+
 
 # O3StdCore hace wrap de O3CPUCore a un core compatible con la libreria estandar de gem5.
 class O3StdCore(BaseCPUCore):
@@ -111,6 +117,8 @@ class O3StdCore(BaseCPUCore):
         num_local_histories=None,
         local_history_length=None,
         num_ports=None,  # Optional parameter for "General" fu_pool
+        num_IQs=None,
+        num_DividedIQ_entries=None,
     ):
         core = O3Core(
             frontend_width,
@@ -129,6 +137,8 @@ class O3StdCore(BaseCPUCore):
             num_local_histories,
             local_history_length,
             num_ports,  # Optional parameter for "General" fu_pool
+            num_IQs,
+            num_DividedIQ_entries,
         )
         super().__init__(core, ISA.X86)
 
@@ -154,6 +164,8 @@ class O3Processor(BaseCPUProcessor):
         num_local_histories=None,
         local_history_length=None,
         num_ports=None,  # Optional parameter for "General" fu_pool
+        num_IQs=None,
+        num_DividedIQ_entries=None,
     ):
         cores = [
             O3StdCore(
@@ -173,6 +185,8 @@ class O3Processor(BaseCPUProcessor):
                 num_local_histories,
                 local_history_length,
                 num_ports,  # Optional parameter for "General" fu_pool
+                num_IQs,
+                num_DividedIQ_entries,
             )
             for _ in range(numCores)
         ]
