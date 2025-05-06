@@ -46,6 +46,19 @@ def parse_arguments():
     parser.add_argument("--mem_size", type=int, default=DEFAULT_MEM_SIZE, help="Number of GB of Main memory for the checkpoint")
     parser.add_argument("--num_cores", type=int, default=DEFAULT_NUM_CORES, help="Number of cores on the system for the checkpoint")
     parser.add_argument("--num_ticks", type=int, default=DEFAULT_NUM_TICKS, help="Number of ticks to run until simulation ends")
+    parser.add_argument("--num_IQs", type=int, default=1, help="Número de IQs en el procesador O3")
+    parser.add_argument(
+    "--num_DividedIQ_entries",
+    type=int,
+    default=256,
+    help="Número de entradas en la IQ dividida del procesador O3",
+    )
+    parser.add_argument(
+    "--num_ports",
+    type=int,
+    default=4,
+    help="Número de puertos (agrupaciones de FUs) en el procesador O3",
+)
     return parser.parse_args()
 
 def create_processor(args):
@@ -55,6 +68,9 @@ def create_processor(args):
         processor_config = SMALL_O3_PROCESSOR_CONFIG
     elif args.config == "generalO3":
         processor_config = GENERAL_O3_PROCESSOR_CONFIG
+        processor_config["num_IQs"] = args.num_IQs
+        processor_config["num_DividedIQ_entries"] = args.num_DividedIQ_entries
+        processor_config["num_ports"] = args.num_ports
     return O3Processor(
         numCores=args.num_cores,
         **processor_config,
