@@ -1,0 +1,60 @@
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 24.0.0.1
+gem5 compiled May  8 2025 09:35:43
+gem5 started May  8 2025 10:11:49
+gem5 executing on ce209.sci.unican.es, pid 998233
+command line: /nfs/home/ce/alonsoge/gem5/build/X86/gem5.opt -re --outdir=/nfs/home/ce/alonsoge/gem5/tfg/out/DivIQ5-restoreftW_1big /nfs/home/ce/alonsoge/gem5/tfg/configs/restore-checkpoint.py --config bigO3 --ckpt_path /nfs/shared/ce/gem5/ckpts/x86/1core/1GB/NPB3.3-SER --application /nfs/shared/ce/gem5/bin/NPB3.3-SER/ft.W.x --num_cores 1 --mem_size 1 --works 10 --num_ticks 100000000000 --iq_size 256
+
+Global frequency set at 1000000000000 ticks per second
+Workend 1
+Workend 2
+Workend 3
+Workend 4
+Workend 5
+Workend 6
+
+
+ NAS Parallel Benchmarks (NPB3.3-SER) - FT Benchmark
+
+ Size                :  128x 128x  32
+ Iterations          :              6
+
+ T =    1     Checksum =    5.673612178944D+02    5.293246849175D+02
+ T =    2     Checksum =    5.631436885271D+02    5.282149986629D+02
+ T =    3     Checksum =    5.594024089970D+02    5.270996558037D+02
+ T =    4     Checksum =    5.560698047020D+02    5.260027904925D+02
+ T =    5     Checksum =    5.530898991250D+02    5.249400845633D+02
+ T =    6     Checksum =    5.504159734538D+02    5.239212247086D+02
+ Verification test for FT successful
+
+
+ FT Benchmark Completed.
+ Class           =                        W
+ Size            =            128x 128x  32
+ Iterations      =                        6
+ Time in seconds =                     0.31
+ Mop/s total     =                  1205.60
+ Operation type  =           floating point
+ Verification    =               SUCCESSFUL
+ Version         =                    3.3.1
+ Compile date    =              06 Feb 2025
+
+ Compile options:
+    F77          = gfortran-4.4
+    FLINK        = $(F77)
+    F_LIB        = (none)
+    F_INC        = (none)
+    FFLAGS       = -cpp -O3 -mcmodel=medium
+    FLINKFLAGS   = -O3 -mcmodel=medium -pthread -lrt
+    RAND         = randi8
+
+
+ Please send all errors/feedbacks to:
+
+ NPB Development Team
+ npb@nas.nasa.gov
+
+
+Exiting @ tick 429557742603 because exiting with last active thread context.

@@ -1,0 +1,50 @@
+gem5 Simulator System.  https://www.gem5.org
+gem5 is copyrighted software; use the --copyright option for details.
+
+gem5 version 24.0.0.1
+gem5 compiled May  8 2025 18:53:34
+gem5 started May  8 2025 18:57:38
+gem5 executing on ce210.sci.unican.es, pid 954303
+command line: build/X86/gem5.opt -re --debug-flags=DividedIQ --outdir=tfg/out/DivIQ5-puertosFijos tfg/configs/gem5-config.py --config generalO3 --num_ports 4 --num_IQs 4 --num_DividedIQ_entries 64
+
+info: Using default config
+Empezando simulación!
+Global frequency set at 1000000000000 ticks per second
+      0: board.processor.cores.core.iq: Parametros usados: numIQs: 4, numEntriesDividedIQ: 64
+      0: board.processor.cores.core.iq: numPorts: 4
+      0: board.processor.cores.core.iq: Using 4 IQs, each with 64 entries, total 256 entries.
+
+
+ NAS Parallel Benchmarks (NPB3.3-SER) - IS Benchmark
+
+ Size:  65536  (class S)
+ Iterations:   10
+
+
+ IS Benchmark Completed
+ Class           =                        S
+ Size            =                    65536
+ Iterations      =                       10
+ Time in seconds =                     0.00
+ Mop/s total     =                   181.99
+ Operation type  =              keys ranked
+ Verification    =               SUCCESSFUL
+ Version         =                    3.3.1
+ Compile date    =              13 Feb 2024
+
+ Compile options:
+    CC           = gcc
+    CLINK        = $(CC)
+    C_LIB        = (none)
+    C_INC        = (none)
+    CFLAGS       = -O3 -mcmodel=medium 
+    CLINKFLAGS   = -O3 -mcmodel=medium -static
+
+
+ Please send all errors/feedbacks to:
+
+ NPB Development Team
+ npb@nas.nasa.gov
+
+
+Terminada la simulación!
