@@ -4,6 +4,7 @@ import subprocess
 import sys
 import shutil
 import argparse
+import math
 
 sys.path.append("/nfs/home/ce/alonsoge/gem5/tfg/configs")
 from SPLASH import getSplashPath, getSplashName
@@ -25,7 +26,7 @@ def resolve_app_directory(base_dir, app):
     os.chdir(full_path)
     return full_path
 
-def generate_sbatch_script(gem5_path, output_dir, config, iq_size, app_name, app_path, ckpt_path, partition="ce_100"):
+def generate_sbatch_script(gem5_path, output_dir, config, iq_size, app_name, app_path, ckpt_path, num_ticks, partition="ce_100"):
     """Generate the sbatch script for the job."""
     script_content = f"""#!/bin/bash
 #SBATCH --partition={partition}
@@ -37,8 +38,8 @@ srun {gem5_path}build/X86/gem5.opt --outdir={output_dir} {gem5_path}tfg/configs/
 --ckpt_path {ckpt_path} \
 --application {app_path} \
 --num_cores 1 --mem_size 1 \
---works 4 \
---num_ticks 50000000000 \
+--works 2 \
+--num_ticks {num_ticks} \
 --iq_size {iq_size}"""
     
     script_path = os.path.join(output_dir, "run.sbatch")
@@ -73,7 +74,7 @@ def get_applications_by_benchmark(benchmark):
     }
     return benchmarks.get(benchmark, [])
 
-def process_benchmark(benchmark, gem5_path, base_output_dir, ckpt_base_dir, benchmark_base_dir, configs, iq_sizes):
+def process_benchmark(benchmark, gem5_path, base_output_dir, ckpt_base_dir, benchmark_base_dir, configs, iq_sizes, num_ticks):
     """Process a single benchmark and submit jobs for its applications."""
     applications = get_applications_by_benchmark(benchmark)
     benchmark_dir = os.path.join(benchmark_base_dir, "Splash-4" if benchmark == "SPLASH" else "NPB3.3-SER")
@@ -86,11 +87,37 @@ def process_benchmark(benchmark, gem5_path, base_output_dir, ckpt_base_dir, benc
             app_path = os.path.join(app_dir, app)
 
             for iq_size in iq_sizes:
-                output_dir = create_directory(os.path.join(base_output_dir, benchmark, config, app_name, f"iq_{iq_size}"), clean_if_exists=True)
-                print(f"Running {app} with IQ size {iq_size} on {config}")
-                sbatch_script = generate_sbatch_script(gem5_path, output_dir, config, iq_size, app_name, app_path, ckpt_path)
-                submit_job(sbatch_script)
-                time.sleep(2)
+                if config == "generalO3":
+                    for num_IQs in [1, 
+                                    #2, 4, 6, 8, 12
+                                    ]:
+                        num_ports = 12 if num_IQs == 1 else num_IQs
+                        entries_per_IQ = math.ceil(iq_size / num_IQs)
+                        output_dir = create_directory(
+                            os.path.join(base_output_dir, benchmark, config, app_name, f"iq_{iq_size}", f"IQs_{num_IQs}"),
+                            clean_if_exists=True)
+                        print(f"Running {app} with IQ size {iq_size}, num_IQs {num_IQs} on {config}")
+                        
+                        sbatch_script = generate_sbatch_script(
+                            gem5_path, output_dir, config, iq_size, app_name, app_path, ckpt_path, num_ticks/2) #Less ticks for dividedIQ, adjusted for 1:30h.
+
+                        # Append extra parameters to script
+                        with open(sbatch_script, "a") as f:
+                            f.write(f" --num_IQs {num_IQs} --num_ports {num_ports} --num_DividedIQ_entries {entries_per_IQ}\n")
+
+                        submit_job(sbatch_script)
+                        time.sleep(2)
+                else:
+                    output_dir = create_directory(
+                        os.path.join(base_output_dir, benchmark, config, app_name, f"iq_{iq_size}"),
+                        clean_if_exists=True)
+                    print(f"Running {app} with IQ size {iq_size} on {config}")
+                    
+                    sbatch_script = generate_sbatch_script(
+                        gem5_path, output_dir, config, iq_size, app_name, app_path, ckpt_path, num_ticks)
+
+                    submit_job(sbatch_script)
+                    time.sleep(2)
 
 def main(benchmark):
     """Main function to orchestrate the job submission."""
@@ -101,17 +128,17 @@ def main(benchmark):
     ckpt_base_dir = "/nfs/shared/ce/gem5/ckpts/x86/1core/1GB/"
     benchmark_base_dir = "/nfs/shared/ce/gem5/bin/"
     
-    configs = [#"generalBigO3",
-               #"generalSmallO3",
-               "bigO3", 
+    configs = ["generalO3", # Means dividedIQ
+               #"bigO3", 
                #"smallO3"
                ]
-    iq_sizes = [#4, 8, 16, 24, 32, 48, 64, 80, 96, 128, 256, 512, 
-                900]
+    #iq_sizes = [4, 8, 16, 32, 64, 128, 256, 512, 1024]
+    iq_sizes = [900]
     benchmarks = [benchmark] if benchmark != "ALL" else ["SPLASH", "NAS"]
+    num_ticks = 100000000000
 
     for bm in benchmarks:
-        process_benchmark(bm, gem5_path, base_output_dir, ckpt_base_dir, benchmark_base_dir, configs, iq_sizes)
+        process_benchmark(bm, gem5_path, base_output_dir, ckpt_base_dir, benchmark_base_dir, configs, iq_sizes, num_ticks)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run gem5 simulations for NAS, SPLASH or all benchmarks.")

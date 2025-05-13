@@ -40,7 +40,7 @@ SMALL_O3_PROCESSOR_CONFIG = {
 }
 
 # Modular backend big O3 configuration, but different fu_pool
-GENERAL_O3_PROCESSOR_CONFIG = {
+GENERAL_BIG_O3_PROCESSOR_CONFIG = {
     "frontend_width": 10,
     "backend_width": 12,
     "rob_size": 900,
@@ -48,6 +48,7 @@ GENERAL_O3_PROCESSOR_CONFIG = {
     "num_int_phys_regs": 916,
     "num_fp_phys_regs": 932,
     "fu_pool": "General",
+    "num_ports": 12,
     "bp": "PerceptBP",
     "numEntriesBtb": 2048 * 4,
     "tagBitsBtb": 18,
@@ -55,6 +56,22 @@ GENERAL_O3_PROCESSOR_CONFIG = {
     "num_filter_entries": 0,
     "num_local_histories": 512,
     "local_history_length": 36,
+}
+
+# Modular backend small O3 configuration, but different fu_pool
+# Small O3 Cache hierarchy configuration
+GENERAL_SMALL_O3_PROCESSOR_CONFIG = {
+    "frontend_width": 3,
+    "backend_width": 7,
+    "rob_size": 96,
+    "lsq_size": 48,               # Eran 36
+    "num_int_phys_regs": 127,
+    "num_fp_phys_regs": 119,
+    "fu_pool": "General",
+    "num_ports": 7,
+    "bp": "TournBP",
+    "numEntriesBtb": 32,
+    "numEntriesRas": 15,
 }
 
 # Big O3 Cache hierarchy configuration
