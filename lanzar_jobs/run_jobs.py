@@ -37,8 +37,8 @@ srun {gem5_path}build/X86/gem5.opt --outdir={output_dir} {gem5_path}tfg/configs/
 --ckpt_path {ckpt_path} \
 --application {app_path} \
 --num_cores 1 --mem_size 1 \
---works 4 \
---num_ticks 50000000000 \
+--works 3 \
+--num_ticks 100000000000 \
 --iq_size {iq_size}"""
     
     script_path = os.path.join(output_dir, "run.sbatch")
@@ -102,12 +102,13 @@ def main(benchmark):
     benchmark_base_dir = "/nfs/shared/ce/gem5/bin/"
     
     configs = [#"generalBigO3",
-               #"generalSmallO3",
-               "bigO3", 
+               "generalSmallO3",
+               #"bigO3", 
                #"smallO3"
                ]
-    iq_sizes = [#4, 8, 16, 24, 32, 48, 64, 80, 96, 128, 256, 512, 
-                900]
+    iq_sizes = [4, 8, 16, 24, 32, 48, 64, 80, 96
+                #, 128, 256, 512, 900
+                ]
     benchmarks = [benchmark] if benchmark != "ALL" else ["SPLASH", "NAS"]
 
     for bm in benchmarks:

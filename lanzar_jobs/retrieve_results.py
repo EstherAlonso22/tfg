@@ -49,13 +49,18 @@ def main(benchmark):
         print(f"Error: The directory {base_output_dir} does not exist.")
         return
 
-    configs = ["bigO3", "smallO3"]
-    iq_sizes = [4, 8, 16, 24, 32, 48, 64, 80, 96, 128, 256, 512]
+    configs = ["bigO3", "smallO3", "generalBigO3", "generalSmallO3"]
+    iq_sizes_big = [4, 8, 16, 24, 32, 48, 64, 80, 96, 128, 256, 512, 900]
+    iq_sizes_small = [4, 8, 16, 24, 32, 48, 64, 80, 96]
     benchmarks = [benchmark] if benchmark != "ALL" else ["SPLASH", "NAS"]
 
     for benchmark in benchmarks:
         applications = get_applications_by_benchmark(benchmark)
-        for config in configs:        
+        for config in configs:
+            if config == "bigO3" or config == "generalBigO3":
+                iq_sizes = iq_sizes_big
+            else:
+                iq_sizes = iq_sizes_small      
             all_data = []  # Lista para almacenar los datos de todas las aplicaciones
             for app in applications:
                 if benchmark == "SPLASH":

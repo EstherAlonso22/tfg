@@ -60,12 +60,10 @@ def create_processor(args):
         processor_config = GENERAL_BIG_O3_PROCESSOR_CONFIG
         processor_config["num_IQs"] = args.num_IQs
         processor_config["num_DividedIQ_entries"] = args.num_DividedIQ_entries
-        processor_config["num_ports"] = args.num_IQs
     elif args.config == "generalSmallO3":
         processor_config = GENERAL_SMALL_O3_PROCESSOR_CONFIG
         processor_config["num_IQs"] = args.num_IQs
         processor_config["num_DividedIQ_entries"] = args.num_DividedIQ_entries
-        processor_config["num_ports"] = args.num_IQs
     return O3Processor(
         numCores=args.num_cores,
         **processor_config,
@@ -73,11 +71,11 @@ def create_processor(args):
     )
 
 def create_cache_hierarchy(args):
-    cache_config = SMALL_O3_CACHE_CONFIG if args.config == "smallO3" else BIG_O3_CACHE_CONFIG
+    cache_config = SMALL_O3_CACHE_CONFIG if args.config == "smallO3" or args.config == "generalSmallO3" else BIG_O3_CACHE_CONFIG
     return ThreeLevelCacheHierarchy(**cache_config)
 
 def get_clock_frequency(args):
-    return SMALL_O3_CLOCK_FREQUENCY if args.config == "smallO3" else BIG_O3_CLOCK_FREQUENCY
+    return SMALL_O3_CLOCK_FREQUENCY if args.config == "smallO3" or args.config == "generalSmallO3" else BIG_O3_CLOCK_FREQUENCY
 
 def get_binary_and_args(args):
     isSPEC = "SPEC" in args.application

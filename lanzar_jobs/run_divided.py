@@ -88,13 +88,13 @@ def process_benchmark(benchmark, gem5_path, base_output_dir, ckpt_base_dir, benc
 
             for iq_size in iq_sizes:
                 if config == "generalO3":
-                    for num_IQs in [1, 
-                                    #2, 4, 6, 8, 12
+                    for num_IQs in [#1, 
+                                    2, 4, 6, 8, 12
                                     ]:
                         num_ports = 12 if num_IQs == 1 else num_IQs
                         entries_per_IQ = math.ceil(iq_size / num_IQs)
                         output_dir = create_directory(
-                            os.path.join(base_output_dir, benchmark, config, app_name, f"iq_{iq_size}", f"IQs_{num_IQs}"),
+                            os.path.join(base_output_dir, benchmark, config, app_name, f"IQs_{num_IQs}"),
                             clean_if_exists=True)
                         print(f"Running {app} with IQ size {iq_size}, num_IQs {num_IQs} on {config}")
                         

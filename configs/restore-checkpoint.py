@@ -65,11 +65,11 @@ def create_processor(args):
     )
 
 def create_cache_hierarchy(args):
-    cache_config = SMALL_O3_CACHE_CONFIG if args.config == "smallO3" else BIG_O3_CACHE_CONFIG
+    cache_config = SMALL_O3_CACHE_CONFIG if args.config == "smallO3" or args.config == "generalSmallO3" else BIG_O3_CACHE_CONFIG
     return ThreeLevelCacheHierarchy(**cache_config)
 
 def get_clock_frequency(args):
-    return SMALL_O3_CLOCK_FREQUENCY if args.config == "smallO3" else BIG_O3_CLOCK_FREQUENCY
+    return SMALL_O3_CLOCK_FREQUENCY if args.config == "smallO3" or args.config == "generalSmallO3" else BIG_O3_CLOCK_FREQUENCY
 
 def get_binary_and_args(args):
     isSPEC = "SPEC" in args.application
