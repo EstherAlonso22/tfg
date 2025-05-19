@@ -53,12 +53,12 @@ def submit_job(script_path):
 def get_applications_by_benchmark(benchmark):
     """Retrieve the list of applications for a given benchmark."""
     benchmarks = {
-        "SPLASH": [
-            "SPLASH4-BARNES", "SPLASH4-CHOLESKY", "SPLASH4-FFT", "SPLASH4-FMM", 
-            "SPLASH4-LU-CONT", "SPLASH4-LU-NOCONT", "SPLASH4-OCEAN-CONT", 
-            "SPLASH4-OCEAN-NOCONT", "SPLASH4-RADIOSITY", "SPLASH4-RAYTRACE", 
-            "SPLASH4-RADIX", "SPLASH4-VOLREND", "SPLASH4-VOLREND-NPL", 
-            "SPLASH4-WATER-SPATIAL", "SPLASH4-WATER-NSQUARED"
+        "SPLASH": ["SPLASH4-OCEAN-NOCONT"
+            # "SPLASH4-BARNES", "SPLASH4-CHOLESKY", "SPLASH4-FFT", "SPLASH4-FMM", 
+            # "SPLASH4-LU-CONT", "SPLASH4-LU-NOCONT", "SPLASH4-OCEAN-CONT", 
+            # "SPLASH4-OCEAN-NOCONT", "SPLASH4-RADIOSITY", "SPLASH4-RAYTRACE", 
+            # "SPLASH4-RADIX", "SPLASH4-VOLREND", "SPLASH4-VOLREND-NPL", 
+            # "SPLASH4-WATER-SPATIAL", "SPLASH4-WATER-NSQUARED"
         ],
         "NAS": [
             "bt.A.x", "bt.W.x", "cg.A.x", "cg.W.x",            
@@ -101,13 +101,14 @@ def main(benchmark):
     ckpt_base_dir = "/nfs/shared/ce/gem5/ckpts/x86/1core/1GB/"
     benchmark_base_dir = "/nfs/shared/ce/gem5/bin/"
     
-    configs = [#"generalBigO3",
-               "generalSmallO3",
+    configs = ["generalBigO3",
+               #"generalSmallO3",
                #"bigO3", 
                #"smallO3"
                ]
-    iq_sizes = [4, 8, 16, 24, 32, 48, 64, 80, 96
-                #, 128, 256, 512, 900
+    iq_sizes = [ #4, 8, 16, 24, 32, 48, 64, 80, 96
+                #, 128, 256, 512, 
+                900
                 ]
     benchmarks = [benchmark] if benchmark != "ALL" else ["SPLASH", "NAS"]
 

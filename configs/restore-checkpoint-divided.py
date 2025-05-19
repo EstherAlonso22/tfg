@@ -60,10 +60,12 @@ def create_processor(args):
         processor_config = GENERAL_BIG_O3_PROCESSOR_CONFIG
         processor_config["num_IQs"] = args.num_IQs
         processor_config["num_DividedIQ_entries"] = args.num_DividedIQ_entries
+        processor_config["num_ports"] = args.num_IQs
     elif args.config == "generalSmallO3":
         processor_config = GENERAL_SMALL_O3_PROCESSOR_CONFIG
         processor_config["num_IQs"] = args.num_IQs
         processor_config["num_DividedIQ_entries"] = args.num_DividedIQ_entries
+        processor_config["num_ports"] = args.num_IQs
     return O3Processor(
         numCores=args.num_cores,
         **processor_config,
