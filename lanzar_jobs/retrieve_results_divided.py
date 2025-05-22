@@ -44,24 +44,22 @@ def get_applications_by_benchmark(benchmark):
 def main(benchmark):
     print("Leyendo resultados")
 
-    base_output_dir = f"/nfs/home/ce/alonsoge/gem5/tfg/out/batch/"
+    base_output_dir = f"/nfs/home/ce/alonsoge/gem5/tfg/out/batch-Dividida-IQmax/"
     if not os.path.exists(base_output_dir):
         print(f"Error: The directory {base_output_dir} does not exist.")
         return
 
     configs = ["generalBigO3", "generalSmallO3"]
-    iq_size_big = 900
-    iq_size_small = 96
     benchmarks = [benchmark] if benchmark != "ALL" else ["SPLASH", "NAS"]
-    num_IQs = [1, 2, 4, 6, 8, 12]
-
+    num_IQs_big = [1, 2, 4, 6, 8, 12]
+    num_IQs_small = [1, 2, 4, 6]
     for benchmark in benchmarks:
         applications = get_applications_by_benchmark(benchmark)
         for config in configs:
-            if config == "bigO3" or config == "generalBigO3":
-                iq_size = iq_size_big
+            if config == "generalBigO3":
+                num_IQs = num_IQs_big
             else:
-                iq_size = iq_size_small      
+                num_IQs = num_IQs_small     
             all_data = []  # Lista para almacenar los datos de todas las aplicaciones
             for app in applications:
                 if benchmark == "SPLASH":
@@ -72,7 +70,7 @@ def main(benchmark):
                 for num_IQ in num_IQs:
                     stats_file = f"{base_output_dir}/{benchmark}/{config}/{app_name}/IQs_{num_IQ}/stats.txt"
                     if not os.path.exists(stats_file):
-                        print(f"Warning: stats file {stats_file} not found for {app} with IQ size {iq_size}")
+                        #print(f"Warning: stats file {stats_file} not found for {app} with {num_IQ} IQs.")
                         continue
 
                     ipc = extract_ipc(stats_file)

@@ -26,14 +26,14 @@ def resolve_app_directory(base_dir, app):
     os.chdir(full_path)
     return full_path
 
-def generate_sbatch_script(gem5_path, output_dir, config, iq_size, app_name, app_path, ckpt_path, num_ticks, num_IQs, entries_per_IQ, partition="ce_100"):
+def generate_sbatch_script(gem5_path, output_dir, config, iq_size, app_name, app_path, ckpt_path, num_ticks, num_IQs, entries_per_IQ, partition="ce_200"):
     """Generate the sbatch script for the job."""
     script_content = f"""#!/bin/bash
 #SBATCH --partition={partition}
-#SBATCH --job-name={app_name}_{iq_size}
+#SBATCH --job-name={app_name}_{num_IQs}
 #SBATCH --output={output_dir}/slurm-%j.out
 
-srun {gem5_path}build/X86/gem5.opt --outdir={output_dir} {gem5_path}tfg/configs/restore-checkpoint-divided.py \
+srun {gem5_path}build/X86/gem5.opt --outdir={output_dir} --debug-flags=DividedIQ {gem5_path}tfg/configs/restore-checkpoint-divided.py \
 --config {config} \
 --ckpt_path {ckpt_path} \
 --application {app_path} \
@@ -63,16 +63,13 @@ def get_applications_by_benchmark(benchmark):
             "SPLASH4-RADIX", "SPLASH4-VOLREND", "SPLASH4-VOLREND-NPL", 
             "SPLASH4-WATER-SPATIAL", "SPLASH4-WATER-NSQUARED"
         ],
-        "NAS": ["bt.A.x"
-            # "bt.A.x", "bt.W.x", "cg.A.x", "cg.W.x",            
-            # "ep.A.x", "ep.W.x", 
-            # "ft.A.x", "ft.W.x", "is.A.x", "is.W.x", 
-            # "lu.A.x", "lu.W.x", "mg.A.x", "mg.W.x", 
-            # "sp.A.x", "sp.W.x", "ua.A.x", "ua.W.x",
+        "NAS": [ #"bt.W.x",
+            "bt.A.x", "cg.A.x", "cg.W.x",            
+            "ep.A.x", "ep.W.x", 
+            "ft.A.x", "ft.W.x", "is.A.x", "is.W.x", 
+            "lu.A.x", "lu.W.x", "mg.A.x", "mg.W.x", 
+            "sp.A.x", "sp.W.x", "ua.A.x", "ua.W.x",
         ],
-        "SPEC": [
-            "cactuBSSN", "gcc", "lbm", "mcf", "namd", "povray", "x264", "xalan"
-        ]
     }
     return benchmarks.get(benchmark, [])
 
@@ -93,7 +90,8 @@ def process_benchmark(benchmark, gem5_path, base_output_dir, ckpt_base_dir, benc
             app_path = os.path.join(app_dir, app)
 
             for num_IQs in [#1, 
-                            2, #4, 6, 8, 12
+                            2, 4, 6, 8, 12
+                            #2, 3, 5, 7
                             ]:
                 entries_per_IQ = math.ceil(iq_size / num_IQs)
                 output_dir = create_directory(
@@ -118,7 +116,7 @@ def main(benchmark):
     ckpt_base_dir = "/nfs/shared/ce/gem5/ckpts/x86/1core/1GB/"
     benchmark_base_dir = "/nfs/shared/ce/gem5/bin/"
     
-    configs = ["generalBigO3", 
+    configs = [#"generalBigO3", 
                "generalSmallO3",
                ]
     benchmarks = [benchmark] if benchmark != "ALL" else ["SPLASH", "NAS"]
