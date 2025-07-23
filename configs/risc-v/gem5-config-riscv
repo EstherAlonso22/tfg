@@ -1,0 +1,159 @@
+import argparse
+from pathlib import Path
+
+import m5
+import m5.debug
+
+from componentsRiscv.customO3CPU import *
+from componentsRiscv.customCacheHierarchy import *
+from componentsRiscv.customFUPool import *
+
+from gem5.components.boards.simple_board import SimpleBoard
+from gem5.components.memory import DualChannelDDR4_2400
+from gem5.resources.resource import BinaryResource
+from gem5.simulate.simulator import (
+    ExitEvent,
+    Simulator,
+)
+from gem5.utils.requires import requires
+
+from datariscv import (
+    DEFAULT_IQ_SIZE,
+    DEFAULT_WORKS,
+    DEFAULT_MEM_SIZE,
+    DEFAULT_NUM_CORES,
+    DEFAULT_NUM_TICKS,
+    RISCV_O3_PROCESSOR_CONFIG,
+    RISCV_O3_CACHE_CONFIG,
+    RISCV_O3_CLOCK_FREQUENCY
+    )
+
+# Argumentos
+parser = argparse.ArgumentParser(
+    description="Configuración genérica de la simulación de gem5"
+)
+parser.add_argument(
+    "--application",
+    type=str,
+    required=True,
+    default="namd",
+    help="Application to be run: full path to the binary.",
+)
+parser.add_argument(
+    "--mem_size",
+    type=int,
+    required=False,
+    default=DEFAULT_MEM_SIZE,
+    help="Number of GB of Main memory for the checkpoint",
+)
+parser.add_argument(
+    "--num_cores",
+    type=int,
+    required=False,
+    default=DEFAULT_NUM_CORES,
+    help="Number of cores on the system for the checkpoint",
+)
+parser.add_argument(
+    "--iq_size",
+    type=int,
+    default=DEFAULT_IQ_SIZE,
+    help="Tamaño de la IQ del procesador O3",
+)
+parser.add_argument(
+    "--num_IQs",
+    type=int,
+    default=1,
+    help="Número de IQs en el procesador O3",
+)
+parser.add_argument(
+    "--num_DividedIQ_entries",
+    type=int,
+    default=104,
+    help="Número de entradas en la IQ dividida del procesador O3",
+)
+parser.add_argument(
+    "--works",
+    type=str,
+    default=DEFAULT_WORKS,
+    help="Number of works until exit"
+)
+parser.add_argument(
+    "--num_ticks",
+    type=int,
+    default=DEFAULT_NUM_TICKS,
+    help="Number of ticks to run until simulation ends"
+)
+args = parser.parse_args()
+requires(isa_required=ISA.RISCV)
+
+# Configuración del procesador O3
+processor_config = RISCV_O3_PROCESSOR_CONFIG
+
+ooo_processor = RiscvO3Processor(
+    numCores=args.num_cores,
+    iq_size=args.iq_size,
+    **processor_config,
+)
+
+# Configuración de la jerarquia de cache
+cache_config = RISCV_O3_CACHE_CONFIG
+caches = ThreeLevelCacheHierarchy(**cache_config)
+
+# Configuración de la memoria principal
+main_memory = DualChannelDDR4_2400(size="%dGiB" % args.mem_size)
+
+# Configuración de la board
+board = SimpleBoard(
+    clk_freq=RISCV_O3_CLOCK_FREQUENCY,
+    memory=main_memory,
+    cache_hierarchy=caches,
+    processor=ooo_processor,
+)
+
+# Path a la aplicacion
+binary_path = Path(args.application)
+
+if binary_path.exists() != True:
+    print("ERROR %s does not exist" % binary_path)
+    exit()
+else:
+    print("Executing %s app" % binary_path)
+
+# Asigna programa a ejecutar
+board.set_se_binary_workload(
+    binary=BinaryResource(
+        local_path=binary_path.as_posix(),
+    )
+)
+
+#TODO: revisar funcionamiento
+def workbegin_handler():
+    print("Resetting stats before ROI!")
+    m5.stats.reset()
+    yield False
+
+def workend_handler(args):
+    num_works = 0
+    while True:
+        num_works += 1
+        print(f"Workend {num_works}")
+        m5.debug.flags["ExecAll"].disable()
+        if num_works < int(args.works):
+            yield False
+        else:
+            yield True
+
+
+# Lanza la simulación
+simulator = Simulator(
+    board=board,
+    full_system=False,
+    on_exit_event={
+        ExitEvent.WORKBEGIN: workbegin_handler(),
+        ExitEvent.WORKEND: workend_handler(args),
+    },
+)
+print("Empezando simulación!")
+simulator.run(args.num_ticks)
+print(f"Exiting @ tick {simulator.get_current_tick()} because {simulator.get_last_exit_event_cause()}.")
+print("Terminada la simulación!")
