@@ -26,7 +26,10 @@ args = parser.parse_args()
 ooo_processor = RiscvO3Processor(
     numCores=1,
     frontend_width=3,
-    backend_width=8, #TODO: cambiar para poner un ancho d issue y distinto de commit
+    backend_width=8,
+    dispatchWidth=4,
+    renameWidth=4,
+    commitWidth=3,
     rob_size=64,
     iq_size=args.iq_size,
     lsq_size=32,
@@ -34,8 +37,9 @@ ooo_processor = RiscvO3Processor(
     num_fp_phys_regs=64,
     fu_pool="Default",
     bp="TournBP",
-    numEntriesBtb=4096,
-    numEntriesRas=12, 
+    #TODO: cambiar BP numEntriesBHT=32768,
+    numEntriesBtb=4096+16,
+    numEntriesRas=12,
 )
 
 caches = ThreeLevelCacheHierarchy(

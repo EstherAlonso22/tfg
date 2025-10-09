@@ -38,15 +38,22 @@ class RiscvO3Core(RiscvO3CPU):
         num_ports=None,  # Optional parameter for "General" fu_pool
         num_IQs=None,
         num_DividedIQ_entries=None,
+        fetchWidth=None,
+        decodeWidth=None,
+        renameWidth=None,
+        issueWidth=None,
+        dispatchWidth=None,
+        commitWidth=None,
+        wbWidth=None,
     ):
         super().__init__()
-        self.fetchWidth = frontend_width
-        self.decodeWidth = frontend_width
-        self.renameWidth = frontend_width
-        self.issueWidth = backend_width
-        self.dispatchWidth = backend_width
-        self.commitWidth = backend_width
-        self.wbWidth = backend_width
+        self.fetchWidth = fetchWidth if fetchWidth is not None else frontend_width
+        self.decodeWidth = decodeWidth if decodeWidth is not None else frontend_width
+        self.renameWidth = renameWidth if renameWidth is not None else frontend_width
+        self.issueWidth = issueWidth if issueWidth is not None else backend_width
+        self.dispatchWidth = dispatchWidth if dispatchWidth is not None else backend_width
+        self.commitWidth = commitWidth if commitWidth is not None else backend_width
+        self.wbWidth = wbWidth if wbWidth is not None else backend_width
 
         self.numROBEntries = rob_size
         self.numIQEntries = iq_size
@@ -119,6 +126,13 @@ class RiscvO3StdCore(BaseCPUCore):
         num_ports=None,  # Optional parameter for "General" fu_pool
         num_IQs=None,
         num_DividedIQ_entries=None,
+        fetchWidth=None,
+        decodeWidth=None,
+        renameWidth=None,
+        issueWidth=None,
+        dispatchWidth=None,
+        commitWidth=None,
+        wbWidth=None,
     ):
         core = RiscvO3Core(
             frontend_width,
@@ -139,6 +153,13 @@ class RiscvO3StdCore(BaseCPUCore):
             num_ports,  # Optional parameter for "General" fu_pool
             num_IQs,
             num_DividedIQ_entries,
+            fetchWidth,
+            decodeWidth,
+            renameWidth,
+            issueWidth,
+            dispatchWidth,
+            commitWidth,
+            wbWidth,
         )
         super().__init__(core, ISA.RISCV)
 
@@ -166,6 +187,13 @@ class RiscvO3Processor(BaseCPUProcessor):
         num_ports=None,  # Optional parameter for "General" fu_pool
         num_IQs=None,
         num_DividedIQ_entries=None,
+        fetchWidth=None,
+        decodeWidth=None,
+        renameWidth=None,
+        issueWidth=None,
+        dispatchWidth=None,
+        commitWidth=None,
+        wbWidth=None,
     ):
         cores = [
             RiscvO3StdCore(
@@ -187,6 +215,13 @@ class RiscvO3Processor(BaseCPUProcessor):
                 num_ports,  # Optional parameter for "General" fu_pool
                 num_IQs,
                 num_DividedIQ_entries,
+                fetchWidth,
+                decodeWidth,
+                renameWidth,
+                issueWidth,
+                dispatchWidth,
+                commitWidth,
+                wbWidth,
             )
             for _ in range(numCores)
         ]
