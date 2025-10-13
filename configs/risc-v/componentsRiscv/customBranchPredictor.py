@@ -1,4 +1,4 @@
-from m5.objects import SimpleBTB, TournamentBP, TAGE_SC_L_TAGE_64KB, ReturnAddrStack, MultiperspectivePerceptron8KB
+from m5.objects import SimpleBTB, TournamentBP, ReturnAddrStack, MultiperspectivePerceptron8KB
 
 # Branch prediction 36-bit history, 512-entry weight table perceptron,
 # 2K-set, 4-way BTB, 15-cycle misprediction penalty 
@@ -24,9 +24,3 @@ class PerceptBP(MultiperspectivePerceptron8KB):
         self.num_local_histories = num_local_histories
         self.local_history_length = local_history_length
 
-class BP(TAGE_SC_L_TAGE_64KB):
-    def __init__(self, numEntriesBtb, tagBitsBtb, numEntriesRas):
-        super(BP, self).__init__()
-        self.btb = BTB(numEntries=numEntriesBtb, tagBits=tagBitsBtb)
-        self.ras = ReturnAddrStack(numEntries=numEntriesRas)
-        #TODO: terminar esto 

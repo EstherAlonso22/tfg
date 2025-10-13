@@ -4,6 +4,7 @@ from componentsRiscv.customCacheHierarchy import *
 from componentsRiscv.customFUPool import *
 
 from gem5.components.boards.simple_board import SimpleBoard
+#from m5.objects.SimpleMemory import SimpleMemory
 from gem5.components.memory import DualChannelDDR4_2400
 
 # from gem5.resources.resource import BinaryResource
@@ -39,38 +40,21 @@ ooo_processor = RiscvO3Processor(
     num_int_phys_regs=96,
     num_fp_phys_regs=64,
     fu_pool="Default",
-    bp="TournBP",
-    # TODO: cambiar BP numEntriesBHT=32768,
-    numEntriesBtb=4096+16,
-    numEntriesRas=12,
+    bp="TAGE_BP",
 )
 
-caches = ThreeLevelCacheHierarchy(
+caches = PrivateL1SharedL2CacheHierarchy(
     # 64B line is the default value
-    l1i_assoc=4,
-    l1i_size="32kB",
-    l1i_tag_latency=1,
-    l1i_data_latency=1,
-    l1i_response_latency=1,  # 3 cycle hit latency
-    l1d_assoc=4,
-    l1d_size="32kB",
-    l1d_tag_latency=1,
-    l1d_data_latency=1,
-    l1d_response_latency=1,  # 4 cycle hit latency
-    l1d_writeback_clean=True,
+    l1i_assoc=2,
+    l1i_size="64kB",    
+    l1d_assoc=2,
+    l1d_size="64kB",
     l2_assoc=8,
-    l2_size="256kB",
-    l2_tag_latency=3,
-    l2_data_latency=7,
-    l2_response_latency=3,  # 13 cycle hit latency
-    l3_assoc=16,
-    l3_size="16MB",
-    l3_tag_latency=10,
-    l3_data_latency=18,
-    l3_response_latency=10,  # 38 cycle hit latency
+    l2_size="128kB",
 )
 
 # Crea la memoria principal
+#TODO: cambiar a memoria ideal. 
 main_memory = DualChannelDDR4_2400(size="4GB")
 
 # Crea la placa base

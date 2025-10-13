@@ -8,6 +8,7 @@ from m5.objects import (
     RiscvO3CPU,
     DefaultFUPool,
     TournamentBP,
+    TAGE_SC_L_TAGE_64KB
 )
 
 from gem5.components.processors.base_cpu_core import BaseCPUCore
@@ -24,13 +25,12 @@ class RiscvO3Core(RiscvO3CPU):
         backend_width,
         rob_size,
         iq_size,
-        lsq_size,
         num_int_phys_regs,
         num_fp_phys_regs,
         fu_pool,
         bp,
-        numEntriesBtb,
-        numEntriesRas,
+        numEntriesBtb=None,
+        numEntriesRas=None,
         tagBitsBtb=None,
         num_filter_entries=None,
         num_local_histories=None,
@@ -45,10 +45,17 @@ class RiscvO3Core(RiscvO3CPU):
         dispatchWidth=None,
         commitWidth=None,
         wbWidth=None,
+        lsq_size=None,
         lq_entries=None,
         sq_entries=None,
     ):
         super().__init__()
+        # Ensure LSQ sizing is valid: either a common lsq_size is provided
+        # or both lq_entries and sq_entries are specified separately.
+        if lsq_size is None and (lq_entries is None or sq_entries is None):
+            raise ValueError(
+                "Either 'lsq_size' must be provided or both 'lq_entries' and 'sq_entries' must be provided"
+            )
         self.fetchWidth = fetchWidth if fetchWidth is not None else frontend_width
         self.decodeWidth = decodeWidth if decodeWidth is not None else frontend_width
         self.renameWidth = renameWidth if renameWidth is not None else frontend_width
@@ -85,11 +92,17 @@ class RiscvO3Core(RiscvO3CPU):
             self.fuPool = DefaultFUPool()
 
         if bp == "TournBP":
+            if numEntriesBtb is None or numEntriesRas is None:
+                raise ValueError("numEntriesBtb and numEntriesRas must be provided for 'TournBP'")
             self.branchPred = TournBP(
                 numEntriesBtb, 
                 numEntriesRas, 
             )
+        elif bp == "TAGE_BP":
+            self.branchPred = TAGE_SC_L_TAGE_64KB()
         elif bp == "PerceptBP":
+            if numEntriesBtb is None or numEntriesRas is None:
+                raise ValueError("numEntriesBtb and numEntriesRas must be provided for 'PerceptBP'")
             self.branchPred = PerceptBP(
                 numEntriesBtb,
                 tagBitsBtb,
@@ -114,13 +127,12 @@ class RiscvO3StdCore(BaseCPUCore):
         backend_width,
         rob_size,
         iq_size,
-        lsq_size,
         num_int_phys_regs,
         num_fp_phys_regs,
         fu_pool,
         bp,
-        numEntriesBtb,
-        numEntriesRas,
+        numEntriesBtb=None,
+        numEntriesRas=None,
         tagBitsBtb=None,        
         num_filter_entries=None,
         num_local_histories=None,
@@ -135,6 +147,7 @@ class RiscvO3StdCore(BaseCPUCore):
         dispatchWidth=None,
         commitWidth=None,
         wbWidth=None,
+        lsq_size=None,
         lq_entries=None,
         sq_entries=None,
     ):
@@ -143,14 +156,13 @@ class RiscvO3StdCore(BaseCPUCore):
             backend_width,
             rob_size,
             iq_size,
-            lsq_size,
             num_int_phys_regs,
             num_fp_phys_regs,
             fu_pool,
             bp,
             numEntriesBtb,
-            tagBitsBtb,
             numEntriesRas,
+            tagBitsBtb,
             num_filter_entries,
             num_local_histories,
             local_history_length,
@@ -164,6 +176,7 @@ class RiscvO3StdCore(BaseCPUCore):
             dispatchWidth,
             commitWidth,
             wbWidth,
+            lsq_size,
             lq_entries,
             sq_entries,
         )
@@ -179,13 +192,12 @@ class RiscvO3Processor(BaseCPUProcessor):
         backend_width,
         rob_size,
         iq_size,
-        lsq_size,
         num_int_phys_regs,
         num_fp_phys_regs,
         fu_pool,
         bp,
-        numEntriesBtb,
-        numEntriesRas,
+        numEntriesBtb=None,
+        numEntriesRas=None,
         tagBitsBtb=None,        
         num_filter_entries=None,
         num_local_histories=None,
@@ -200,6 +212,7 @@ class RiscvO3Processor(BaseCPUProcessor):
         dispatchWidth=None,
         commitWidth=None,
         wbWidth=None,
+        lsq_size=None,
         lq_entries=None,
         sq_entries=None,
     ):
@@ -209,14 +222,13 @@ class RiscvO3Processor(BaseCPUProcessor):
                 backend_width,
                 rob_size,
                 iq_size,
-                lsq_size,
                 num_int_phys_regs,
                 num_fp_phys_regs,
                 fu_pool,
                 bp,
                 numEntriesBtb,
-                tagBitsBtb,
                 numEntriesRas,
+                tagBitsBtb,
                 num_filter_entries,
                 num_local_histories,
                 local_history_length,
@@ -230,6 +242,7 @@ class RiscvO3Processor(BaseCPUProcessor):
                 dispatchWidth,
                 commitWidth,
                 wbWidth,
+                lsq_size,
                 lq_entries,
                 sq_entries,
             )
