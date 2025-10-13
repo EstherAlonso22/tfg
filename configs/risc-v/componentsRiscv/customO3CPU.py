@@ -45,6 +45,8 @@ class RiscvO3Core(RiscvO3CPU):
         dispatchWidth=None,
         commitWidth=None,
         wbWidth=None,
+        lq_entries=None,
+        sq_entries=None,
     ):
         super().__init__()
         self.fetchWidth = fetchWidth if fetchWidth is not None else frontend_width
@@ -57,8 +59,8 @@ class RiscvO3Core(RiscvO3CPU):
 
         self.numROBEntries = rob_size
         self.numIQEntries = iq_size
-        self.LQEntries = lsq_size
-        self.SQEntries = lsq_size
+        self.LQEntries = lq_entries if lq_entries is not None else lsq_size
+        self.SQEntries = sq_entries if sq_entries is not None else lsq_size
 
         self.numPhysIntRegs = num_int_phys_regs
         self.numPhysFloatRegs = num_fp_phys_regs
@@ -133,6 +135,8 @@ class RiscvO3StdCore(BaseCPUCore):
         dispatchWidth=None,
         commitWidth=None,
         wbWidth=None,
+        lq_entries=None,
+        sq_entries=None,
     ):
         core = RiscvO3Core(
             frontend_width,
@@ -160,6 +164,8 @@ class RiscvO3StdCore(BaseCPUCore):
             dispatchWidth,
             commitWidth,
             wbWidth,
+            lq_entries,
+            sq_entries,
         )
         super().__init__(core, ISA.RISCV)
 
@@ -194,6 +200,8 @@ class RiscvO3Processor(BaseCPUProcessor):
         dispatchWidth=None,
         commitWidth=None,
         wbWidth=None,
+        lq_entries=None,
+        sq_entries=None,
     ):
         cores = [
             RiscvO3StdCore(
@@ -222,6 +230,8 @@ class RiscvO3Processor(BaseCPUProcessor):
                 dispatchWidth,
                 commitWidth,
                 wbWidth,
+                lq_entries,
+                sq_entries,
             )
             for _ in range(numCores)
         ]
