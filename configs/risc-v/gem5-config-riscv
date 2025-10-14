@@ -53,24 +53,6 @@ parser.add_argument(
     help="Number of cores on the system for the checkpoint",
 )
 parser.add_argument(
-    "--iq_size",
-    type=int,
-    default=64,
-    help="Tamaño de la IQ del procesador O3",
-)
-parser.add_argument(
-    "--num_IQs",
-    type=int,
-    default=1,
-    help="Número de IQs en el procesador O3",
-)
-parser.add_argument(
-    "--num_DividedIQ_entries",
-    type=int,
-    default=104,
-    help="Número de entradas en la IQ dividida del procesador O3",
-)
-parser.add_argument(
     "--works",
     type=str,
     default=DEFAULT_WORKS,
@@ -87,10 +69,8 @@ requires(isa_required=ISA.RISCV)
 
 # Configuración del procesador O3
 processor_config = RISCV_O3_PROCESSOR_CONFIG
-
 ooo_processor = RiscvO3Processor(
     numCores=args.num_cores,
-    iq_size=args.iq_size,
     **processor_config,
 )
 
@@ -99,6 +79,7 @@ cache_config = RISCV_O3_CACHE_CONFIG
 caches = PrivateL1SharedL2CacheHierarchy(**cache_config)
 
 # Configuración de la memoria principal
+#TODO: cambiar a memoria ideal.
 main_memory = DualChannelDDR4_2400(size="%dGiB" % args.mem_size)
 
 # Configuración de la board
@@ -111,7 +92,6 @@ board = SimpleBoard(
 
 # Path a la aplicacion
 binary_path = Path(args.application)
-
 if binary_path.exists() != True:
     print("ERROR %s does not exist" % binary_path)
     exit()
