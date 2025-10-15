@@ -3,7 +3,12 @@ from componentsRiscv.customBranchPredictor import (
     TournBP,
     TAGE_BP
 )
-from componentsRiscv.customFUPool import FUP_Big, FUP_Small, FUP_General
+from componentsRiscv.customFUPool import (
+    FUP_Big, 
+    FUP_Small, 
+    FUP_General, 
+    FUP_XT910
+)
 
 from m5.objects import (
     RiscvO3CPU,

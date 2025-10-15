@@ -40,7 +40,7 @@ ooo_processor = RiscvO3Processor(
     sq_entries=12,
     num_int_phys_regs=96,
     num_fp_phys_regs=64,
-    fu_pool="Default",
+    fu_pool="XT-910",
     bp="TAGE_BP"
 )
 
