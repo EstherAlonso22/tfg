@@ -5,6 +5,7 @@ from componentsRiscv.customFUPool import *
 
 from gem5.components.boards.simple_board import SimpleBoard
 #from m5.objects.SimpleMemory import SimpleMemory
+from gem5.components.cachehierarchies.classic.private_l1_shared_l2_cache_hierarchy import PrivateL1SharedL2CacheHierarchy
 from gem5.components.memory import DualChannelDDR4_2400
 
 # from gem5.resources.resource import BinaryResource
@@ -40,7 +41,7 @@ ooo_processor = RiscvO3Processor(
     num_int_phys_regs=96,
     num_fp_phys_regs=64,
     fu_pool="Default",
-    bp="TAGE_BP",
+    bp="TAGE_BP"
 )
 
 caches = PrivateL1SharedL2CacheHierarchy(
